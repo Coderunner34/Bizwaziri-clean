@@ -1,11 +1,34 @@
 @import "tailwindcss";
 
 
+
+
 body {
   background-color: var(--color-white);
   color: var(--color-black);
 }
+/* Smooth scrolling for the whole page */
+html {
+  scroll-behavior: smooth;
+}
 
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #F57C00;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #E57000;
+}
 
 
 @layer properties {
