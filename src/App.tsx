@@ -1,29 +1,32 @@
 import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { ProfessionalNav } from './components/ProfessionalNav';
-import { CinematicHero } from './components/CinematicHero';
-import { BusinessCrisisSection } from './components/BusinessCrisisSection';
-import { AboutStory } from './components/AboutStory';
-import { ROICalculator } from './components/ROICalculator';
-import { TransformationCaseStudies } from './components/TransformationCaseStudies';
-import { TransformationProcess } from './components/TransformationProcess';
-import { EducationalHub } from './components/EducationalHub';
-import { CleanServices } from './components/CleanServices';
-import { ServicesAndPricing } from './components/ServicesAndPricing';
-import { CleanTestimonials } from './components/CleanTestimonials';
-import { CleanFAQ } from './components/CleanFAQ';
-import { EnhancedContact } from './components/EnhancedContact';
-import { ServiceAgreement } from './components/ServiceAgreement';
 import { ProfessionalFooter } from './components/ProfessionalFooter';
 import { BookingModal } from './components/BookingModal';
+import { ServiceAgreement } from './components/ServiceAgreement';
 import { BackToTop } from './components/BackToTop';
 import { QuickContact } from './components/QuickContact';
 import { ProgressIndicator } from './components/ProgressIndicator';
 
-export default function App() {
+// Import Pages
+import { HomePage } from './pages/Home/HomePage';
+import { AboutPage } from './pages/About/AboutPage';
+import { ServicesPage } from './pages/Services/ServicesPage';
+import { CaseStudiesPage } from './pages/CaseStudies/CaseStudiesPage';
+import { ContactPage } from './pages/Contact/ContactPage';
+import { PageTransition } from './components/PageTransition';
+import { EducationPage } from './pages/Education/EducationPage';
+
+
+
+
+
+function AppContent() {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isServiceAgreementOpen, setIsServiceAgreementOpen] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,121 +37,106 @@ export default function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      const offset = 80;
-      const elementPosition = element.offsetTop - offset;
-      window.scrollTo({
-        top: elementPosition,
-        behavior: 'smooth'
-      });
-    }
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  const handleBookingClick = () => {
+    setIsBookingModalOpen(true);
   };
 
-
-
+  const handleDownloadAgreement = () => {
+    setIsServiceAgreementOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Toast notifications */}
       <Toaster position="top-right" />
-
-      {/* Progress Indicator */}
       <ProgressIndicator />
 
-      {/* Navigation */}
-      <ProfessionalNav 
-        onBookingClick={() => setIsBookingModalOpen(true)}
-        onNavigate={scrollToSection}
-      />
+      {/* Navigation - Shows on ALL pages */}
+      <ProfessionalNav onBookingClick={handleBookingClick} />
 
-      {/* Main Content */}
+      {/* Main Content with Routes - DIFFERENT content per page */}
       <main>
-        {/* Hero */}
-        <section id="home">
-          <CinematicHero onBookingClick={() => setIsBookingModalOpen(true)} />
-        </section>
-
-        {/* About & Story */}
-        <section id="about">
-          <AboutStory />
-        </section>
-
-        {/* Business Crisis */}
-        <section id="success-stories">
-          <BusinessCrisisSection />
-        </section>
-
-        {/* Case Studies */}
-        <section id="case-studies">
-          <TransformationCaseStudies />
-        </section>
-
-        {/* ROI Calculator */}
-        <section id="roi-calculator">
-          <ROICalculator />
-        </section>
-
-        {/* Services */}
-        <section id="services-overview">
-          <CleanServices onBookingClick={() => setIsBookingModalOpen(true)} />
-        </section>
-
-        {/* Pricing & Agreement */}
-        <section id="pricing">
-          { <ServicesAndPricing 
-            onBookingClick={() => setIsBookingModalOpen(true)}
-            onDownloadAgreement={() => setIsServiceAgreementOpen(true)}
-          /> }
-        </section>
-
-        {/* Process */}
-        <section id="process">
-          <TransformationProcess />
-        </section>
-
-        {/* Education */}
-        <section id="education">
-          <EducationalHub />
-        </section>
-
-        {/* Testimonials */}
-        <section id="testimonials">
-          <CleanTestimonials />
-        </section>
-
-        {/* FAQ */}
-        <section id="faq">
-          <CleanFAQ />
-        </section>
-
-        {/* Contact */}
-        <section id="contact">
-          <EnhancedContact onBookingClick={() => setIsBookingModalOpen(true)} />
-        </section>
-
-        {/* Quick Contact Floating Button */}
-        <QuickContact onBookingClick={() => setIsBookingModalOpen(true)} />
-
-        {/* Service Agreement Modal */}
-        <ServiceAgreement
-          isOpen={isServiceAgreementOpen}
-          onClose={() => setIsServiceAgreementOpen(false)}
+<Routes>
+  <Route 
+    path="/" 
+    element={
+      <PageTransition>
+        <HomePage onBookingClick={handleBookingClick} />
+      </PageTransition>
+    } 
+  />
+  <Route 
+    path="/about" 
+    element={
+      <PageTransition>
+        <AboutPage />
+      </PageTransition>
+    } 
+  />
+  <Route 
+    path="/services" 
+    element={
+      <PageTransition>
+        <ServicesPage 
+          onBookingClick={handleBookingClick}
+          onDownloadAgreement={handleDownloadAgreement}
         />
+      </PageTransition>
+    } 
+  />
+  <Route 
+    path="/case-studies" 
+    element={
+      <PageTransition>
+        <CaseStudiesPage />
+      </PageTransition>
+    } 
+  />
+  <Route 
+    path="/education" 
+    element={
+      <PageTransition>
+        <EducationPage />
+      </PageTransition>
+    } 
+  />
+  <Route 
+    path="/contact" 
+    element={
+      <PageTransition>
+        <ContactPage onBookingClick={handleBookingClick} />
+      </PageTransition>
+    } 
+  />
+</Routes>
       </main>
 
-      {/* Footer */}
-      {/* <ProfessionalFooter onNavigate={scrollToSection} /> */}
-
-      {/* Back to Top */}
+      {/* Global Components - Show on ALL pages */}
+      <QuickContact onBookingClick={handleBookingClick} />
+      <ProfessionalFooter />
       <BackToTop isVisible={showBackToTop} />
 
-      {/* Booking Modal */}
+      {/* Modals - Work across ALL pages */}
       <BookingModal
         isOpen={isBookingModalOpen}
         onClose={() => setIsBookingModalOpen(false)}
       />
+      <ServiceAgreement
+        isOpen={isServiceAgreementOpen}
+        onClose={() => setIsServiceAgreementOpen(false)}
+      />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
